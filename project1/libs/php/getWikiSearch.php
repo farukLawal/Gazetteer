@@ -5,11 +5,11 @@
 
 	$executionStartTime = microtime(true);
 
-    $country = $_REQUEST['country'];
+    	$country = $_REQUEST['country'];
 
-    $url="http://api.geonames.org/wikipediaSearchJSON?formatted=true&q={$country}&maxRows=10&username=acenior&style=full";
+    	$url="http://api.geonames.org/wikipediaSearchJSON?formatted=true&q={$country}&maxRows=10&username=acenior&style=full";
 
-    $ch = curl_init();
+    	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);
@@ -26,7 +26,7 @@
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
 	$output['data'] = $decode['geonames'];
 
-    //added extra outputs geonames, openweather, etc..
+    	//added extra outputs geonames, openweather, etc..
 	header('Content-Type: application/json; charset=UTF-8');
 
 	echo json_encode($output); 
