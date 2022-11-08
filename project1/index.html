@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Faruk">
+    <link rel="icon" type="image/x-icon" href="libs/worldwide-location--v1.png">
+    <title>Gazetteer</title>
+
+    <!-- Bootstrap CSS File -->
+    <link href="libs/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS (Styles.css)  -->
+    <link rel="stylesheet" href="libs/css/styles.css">
+
+    <!-- Leaflet Easybutton CSS -->
+    <link rel="stylesheet" href="libs/css/easy-button.css">
+
+    <!-- Leaflet Control Locate CSS  -->
+    <link rel="stylesheet" href="libs/css/L.Control.Locate.min.css">
+    
+    <!-- Leaflet Extra Markers CSS -->
+    <link rel="stylesheet" href="libs/Leaflet.ExtraMarkers-master/dist/css/leaflet.extra-markers.min.css">
+
+    <!-- Leaflet Markercluster CSS -->
+    <link rel="stylesheet" href="libs/Leaflet.markercluster-1.4.1/dist/MarkerCluster.css">
+
+    <!-- Leaflet Markercluster Deafualt CSS -->
+    <link rel="stylesheet" href="libs/Leaflet.markercluster-1.4.1/dist/MarkerCluster.Default.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="libs/assets/leaflet/leaflet.css" /> 
+
+
+</head>
+<body>
+    <!-- preloader  -->
+    <div class="preloader">
+      <img src="libs/icons8-location.gif" alt="">
+    </div>
+    
+    
+
+    <!-- Navbar Start -->
+   <div id="nav-container" class="navbar fixed-top navbar-expand-lg navbar-dark p-md-3 justify-content-center">
+      
+    <div class="form-inline my-2 my-lg-0" id="form-container">
+       <select name="selected-country" class="btn btn-light dropdown-toggle" id="selectCountry" hidden>
+          <option value="none" selected disabled hidden>Select a country</option>
+       </select>
+    </div>
+  </div>
+
+
+    <!-- map  -->
+    <div id="map" class="bg-light"></div>
+
+    <!-- Weather Modal -->
+    <div class="modal fade" id="weather-modal" tabindex="-1" aria-labelledby="weather-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+         <div class="modal-header justify-content-center bg-black text-white">
+            <h5 class="modal-title" id="weather-modal">Weather in <span id="weather-country-name"></span> <span id="weather-country-flag"></span></h5>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
+         </div>
+         <div class="modal-body bg-light">
+            <table class="table table-striped">
+               <tbody>
+                  <tr>
+                     <td  colspan="1" id="weather-icon"></td>
+                     <td style="vertical-align: middle;"><span id="temperature"></span> &degC<br><span id="weather-description"></span></td>
+                  </tr>
+                  <tr>
+                     <td>Feels Like</td>
+                     <td><span id="feelslike"></span> &degC</td>
+                  </tr>
+                  <tr>
+                     <td>Minimum Temperature</td>
+                     <td><span id="mintemp"></span> &degC</td>
+                  </tr>
+                  <tr>
+                     <td>Maximum Temperature</td>
+                     <td><span id="maxtemp"></span> &degC</td>
+                  </tr>
+                  <tr>
+                     <td>Pressure</td>
+                     <td><span id="pressure"></span> Hg</td>
+                  </tr>
+                  <tr>
+                     <td>Humidity</td>
+                     <td><span id="humidity"></span> %</td>
+                  </tr>
+                  <tr>
+                     <td>Clouds</td>
+                     <td><span id="clouds"></span> %</td>
+                  </tr>
+                  <tr>
+                     <td>WindSpeed</td>
+                     <td><span id="windSpeed"></span> mph</td>
+                  </tr>
+                  
+               </tbody>
+             </table>
+         </div>
+         <div class="modal-footer bg-white">
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+         </div>
+      </div>
+      </div>
+   </div>
+
+   <!-- General Information Modal -->
+   <div class="modal fade" id="general-modal" tabindex="-1" aria-labelledby="general-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+         <div class="modal-header justify-content-center bg-black text-white">
+            <h5 class="modal-title" id="general-modal"><span id="general-country-name"></span> <span id="general-country-flag"></span></h5>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
+         </div>
+         <div class="modal-body bg-light">
+            <table class="table table-striped">
+               <tbody>
+                  <tr>
+                     <td>Name</td>
+                     <td><span id="general-name"></span></td>
+                  </tr>
+                  <tr>
+                     <td>Capital</td>
+                     <td><span id="general-capital"></span></td>
+                  </tr>
+                  <tr>
+                     <td>Region</td>
+                     <td><span id="general-region"></span></td>
+                  </tr>
+                  <tr>
+                     <td>Population</td>
+                     <td><span id="general-population"></span></td>
+                  </tr>
+                  <tr>
+                     <td>Timezone</td>
+                     <td><span id="general-timezone"></span></td>
+                  </tr>
+                  <tr>
+                     <td>Country area</td>
+                     <td><span id="general-area"></span> km<sup>2</sup></td>
+                  </tr>
+                  <tr>
+                     <td>Native Name</td>
+                     <td><span id="general-nativename"></span></td>
+                  </tr>
+                  <tr>
+                     <td>Flag</td>
+                     <td><span id="general-flag"></span></td>
+                  </tr>
+                  <tr>
+                     <td>Language</td>
+                     <td><span id="general-language"></span></td>
+                  </tr>
+               
+               </tbody>
+             </table>
+         </div>
+         <div class="modal-footer bg-white">
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+         </div>
+      </div>
+      </div>
+   </div>
+
+   <!-- Currency Modal  -->
+   <div class="modal fade" id="exchange-modal" tabindex="-1" aria-labelledby="exchange-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+         <div class="modal-header justify-content-center bg-black text-white">
+            <h5 class="modal-title" id="exchange-modal">Currency: <span id="exchange-country-name"></span> <span id="exchange-country-flag"></span></h5>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
+         </div>
+         <div class="modal-body bg-light">
+                  <div class="d-flex flex-wrap justify-content-center lead-p"> 
+                     <p id="txtCurrName" class="mb-0"></p>&nbsp; 
+                     <p class="mb-0">&nbsp;&#9679;&nbsp; <span id="txtCurrCode" class="mb-0"></span> &nbsp;&#9679;&nbsp;</p>&nbsp;
+                     <p class="txtCurrSymbol mb-0"></p>                                                                                           
+             </div>
+             <hr class="w-100">
+             <div class="d-flex justify-content-center flex-column align-items-center">
+                     <label for="currencyConvert" class="form-label pb-2 slight-bold" >Currency Converter</label>
+                     <div class="input-group mb-3 w-100 currency-inp">
+                             <span class="input-group-text txtCurrSymbol"></span>
+                             <input type="number" value="10" id="currencyConvert" class="form-control" aria-label="Amount">
+                     </div>
+                     <div class="input-group mb-3 w-100 currency-inp flex-nowrap">                                                                
+                             <select class="form-select" id="selectConversion"></select>                                                                        
+                             <span class="input-group-text" id="ansConversion"></span>
+                     </div>
+                     <p class="mb-0">Exchange Rate: <span id="txtExchange"></span></p>
+             </div>        
+     </div>                  
+         <div class="modal-footer bg-white d-flex justify-content-around">
+            <button type="button" class="btn btn-primary double" id="resetConverter">Reset</button>
+            <button type="button" class="btn btn-dark double" data-bs-dismiss="modal">Close</button>
+         </div>
+      </div>
+      </div>
+   </div>
+
+   <!-- Wikipedia Modal  -->
+   <div class="modal fade" id="modalWikiBox" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                      <div class="modal-header bg-black text-white">
+                              <h5 class="modal-title" id="modalWikiTitle">Wikipedia Links</h5>
+                              <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div id="wikibody" class="modal-body modal-dialog-scrollable pb-1"></div> 
+
+                      <div id="wikiframe"></div> 
+                      
+                      <div class="modal-footer d-flex justify-content-around">
+                              <a id="wikiNewTab" href="" class="btn btn-primary double" target="_blank">New Tab</a>
+                              <button type="button" class="btn btn-dark double" data-bs-dismiss="modal">Close</button>
+                      </div>
+              </div>
+      </div>
+</div>
+
+<!-- News Modal  -->
+<div class="modal fade" id="news-modal" tabindex="-1" aria-labelledby="news-modal" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+   <div class="modal-content">
+      <div class="modal-header justify-content-center bg-black text-white">
+         <h5 class="modal-title" id="news-modal">Latest news in <span id="news-country-name"></span> <span id="news-country-flag"></span></h5>
+      </div>
+      <div class="modal-body bg-white text-dark">
+            
+               <!-- News 1 -->
+               <hr>
+                  <h5><span id="news-title1"></span></h5>
+                  <div id="news-image1"></div>
+                  <p><span id="news-description1"></span></p>
+                  <div id="news-link1"></div>
+               </hr>
+
+               <!-- News 2 -->
+               <hr>
+                  <h5><span id="news-title2"></span></h5>
+                  <div id="news-image2"></div>
+                  <p><span id="news-description2"></span></p>
+                  <div id="news-link2"></div>
+               </hr>
+
+               <!-- News 3 -->
+               <hr>
+                  <h5><span id="news-title3"></span></h5>
+                  <div id="news-image3"></div>
+                  <p><span id="news-description3"></span></p>
+                  <div id="news-link3"></div>
+               </hr>
+
+               <!-- News 4 -->
+               <hr>
+                  <h5><span id="news-title4"></span></h5>
+                  <div id="news-image4"></div>
+                  <p><span id="news-description4"></span></p>
+                  <div id="news-link4"></div>
+               </hr>
+             
+      </div>
+      <div class="modal-footer bg-white">
+         <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+      </div>
+   </div>
+   </div>
+</div>
+
+<!-- Images Modal  -->
+<div class="modal fade" id="photo-modal" tabindex="-1" aria-labelledby="photo-modal" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+   <div class="modal-content">
+      <div class="modal-header justify-content-center bg-black text-white">
+         <h5 class="modal-title" id="photo-modal">Photos of <span id="photo-country-name"></span> <span id="news-country-flag"></span></h5>
+      </div>
+      <div class="modal-body bg-white text-dark">
+         
+         <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active" data-bs-interval="10000">
+                <img id="first-image" src="" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+              </div>
+              <div class="carousel-item" data-bs-interval="2000">
+                <img id="second-image" src="" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img id="third-image" src="" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+      
+      </div>
+      <div class="modal-footer bg-white">
+         <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+      </div>
+   </div>
+   </div>
+</div>
+
+
+    <!-- Leaflet JS -->
+    <script src="libs/assets/leaflet/leaflet.js" ></script>
+
+    <!-- Leafleat EasyButton JS -->
+    <script src="libs/js/easy-button.js"></script>
+
+    <!-- Leaflet Extra Markers JS -->
+    <script src="libs/Leaflet.ExtraMarkers-master/dist/js/leaflet.extra-markers.js"></script>
+
+    <!-- Leaflet Marker Cluster  -->
+    <script src="libs/Leaflet.markercluster-1.4.1/dist/leaflet.markercluster-src.js"></script>
+
+    <!-- FontAwesome JS -->
+   <script src="https://kit.fontawesome.com/79c6f38879.js" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="libs/assets/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Leaflet Control JS -->
+    <script src="libs/js/L.Control.Locate.min.js" charset="utf-8"></script>
+
+    <!-- JQuery  -->
+    <script src="libs/js/jquery-3.6.1.min.js"></script>
+
+    <!-- Javascript (Script.js)  -->
+    <script src="libs/js/script.js"></script>
+
+
+</body>
+</html>
