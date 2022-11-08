@@ -6,10 +6,10 @@
 	$executionStartTime = microtime(true);
 
 
-    $url='https://openexchangerates.org/api/currencies.json?app_id=dbe30082e7ea40a9979e6925b3baa4be';
+    	$url='https://openexchangerates.org/api/currencies.json?app_id=dbe30082e7ea40a9979e6925b3baa4be';
     
 
-    $ch = curl_init();
+    	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);
