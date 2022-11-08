@@ -5,15 +5,15 @@
 
 	$executionStartTime = microtime(true);
 
-    $from = $_REQUEST['base'];
+    	$from = $_REQUEST['base'];
 	$to = $_REQUEST['conversion'];
 	$amount = $_REQUEST['amount'];
 
 
-    $url="https://api.exchangerate.host/convert?from={$from}&to={$to}&amount={$amount}";
+    	$url="https://api.exchangerate.host/convert?from={$from}&to={$to}&amount={$amount}";
     
 
-    $ch = curl_init();
+    	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);
