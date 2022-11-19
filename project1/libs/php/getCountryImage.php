@@ -6,12 +6,12 @@
 	$executionStartTime = microtime(true);
 
 
-    	$countryName = $_REQUEST['country'];
+    $countryName = $_REQUEST['country'];
 
-    	$url='https://api.unsplash.com/search/photos?page=1&query=' . $countryName . '&client_id=AUhHM4tEC7On2ht_odxNl1TGd2XR1C6iaAWVSv5Tewo';
+    $url='https://api.unsplash.com/search/photos?page=1&query=' . $countryName . '&client_id=AUhHM4tEC7On2ht_odxNl1TGd2XR1C6iaAWVSv5Tewo';
     
 
-    	$ch = curl_init();
+    $ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);

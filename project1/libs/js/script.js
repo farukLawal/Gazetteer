@@ -10,8 +10,7 @@ $('select').removeAttr('hidden');
     const osm = '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>';
     const thunderForestMap = '<a href="http://www.thunderforest.com">Thunderforest</a>';
     const attribution = 'Maps &copy; ' +thunderForestMap+ ', Data &copy; ' +osm;
-    const tileLayers = ['atlas', 'cycle', 'landscape', 'neighbourhood',  'outdoors', 'pioneer', 
-                        'transport', 'mobile-atlas', 'transport-dark','spinal-map'];
+    const tileLayers = ['cycle', 'transport', 'landscape', 'outdoors'];
 
     const baseMaps = {};
 
@@ -32,13 +31,6 @@ $('select').removeAttr('hidden');
     L.control.zoom({position: 'topleft'}).addTo(map);
     L.control.scale().addTo(map);
 
-    // Setting the zoom and scale buttons to the top left of the map 
-    L.control.locate({
-        position: 'topleft',
-        strings: {
-            title: "Click to see your location"
-        }
-    }).addTo(map);
 
 // ------------------------------------------- SELECT GEOLOCATION AND BORDERS ------------------------------------------- //
 
@@ -100,7 +92,6 @@ $('select').removeAttr('hidden');
 
     $('#selectCountry').on('change', () =>{
         let countryIso = $('#selectCountry').val();
-        console.log(`Selected Country's ISO_a2 name is ${countryIso}`);
 
         // Getting the country borders from countryBorders.geo.json and adding it to map
         $.ajax({
@@ -114,7 +105,6 @@ $('select').removeAttr('hidden');
 
                 },
                 success: function(result){
-                    console.log(result);
                     if(Countryborder != undefined){
                         map.removeLayer(Countryborder);
                     }
@@ -135,16 +125,31 @@ $('select').removeAttr('hidden');
 // ------------------------------------------- MARKERS AND CLUSTERS ------------------------------------------- //
 
     // Storing cluster group into a variable called overlays
+
+    
+    
+    // let parent = L.markerClusterGroup(webcamlayer, poi, earthquake);
     let overlays = L.markerClusterGroup();
+
+    let webcamlayer = L.featureGroup.subGroup(overlays);
+    let poi = L.featureGroup.subGroup(overlays);
+    let earthquake = L.featureGroup.subGroup(overlays);
+
+    overlays.addTo(map);
 
 
     // Adding the cluster group to the overlay drop down
-    layerControl.addOverlay(overlays, "Overlays");
+    layerControl.addOverlay(webcamlayer, "Webcams");
+    layerControl.addOverlay(poi, "Place of Interest");
+    layerControl.addOverlay(earthquake, "Earthquake");
 
 
     // Getting the overlay markers based on the country selected
     $('#selectCountry').on('change', () =>{
-        overlays.clearLayers();
+        webcamlayer.clearLayers();
+        poi.clearLayers();
+        earthquake.clearLayers();
+
         $.ajax({
             url: "libs/php/getCoordiates.php",
             type: 'POST',
@@ -186,6 +191,7 @@ $('select').removeAttr('hidden');
                                     markerColor: 'orange',
                                     iconColor: 'white',
                                     shape: 'square',
+                                    prefix: 'fa'
                                 });
         
                                 let webcams = L.marker([lat,lng], {icon: redMarker});
@@ -195,9 +201,8 @@ $('select').removeAttr('hidden');
                                                         + `<div class="webcam"><iframe title="${title} webcam" src=${webcam}></iframe><div>`
                                                         , {'className' : 'custom-windy-popup'});
         
-                                                        overlays.addLayer(webcams);
-                                                        
-                                                        map.addLayer(overlays);
+                                                        webcamlayer.addLayer(webcams);
+                                                        map.addLayer(webcamlayer);
                                                         
                             };
                             
@@ -237,7 +242,8 @@ $('select').removeAttr('hidden');
                                     icon: 'fas fa-house-damage fa-2x',
                                     markerColor: 'red',
                                     iconColor: 'white',
-                                    shape: 'star',						
+                                    shape: 'star',
+                                    prefix: 'fa'						
                                 });
 
                                 let earthquakes = L.marker([lat,lng], {icon: earthquakeIcon});
@@ -249,8 +255,8 @@ $('select').removeAttr('hidden');
                                                         + '<br>Depth: ' +  depth 
                                                         , {'className' : 'custom-popup'});
 
-                                                        overlays.addLayer(earthquakes);	
-                                                        map.addLayer(overlays);
+                                                        earthquake.addLayer(earthquakes);
+                                                        map.addLayer(earthquake);
                             } 
 
                         };
@@ -285,6 +291,7 @@ $('select').removeAttr('hidden');
                                     markerColor: 'black',
                                     iconColor: 'white',
                                     shape: 'square',
+                                    prefix: 'fa'
                                 });
 
                                 let placesOfInterest = L.marker([lat,lng], {icon: places});
@@ -294,8 +301,8 @@ $('select').removeAttr('hidden');
                                                         + '<br>' + `<a target="_blank" style="color:black; text-decoration:none;" href="//${wiki}">Click For More</a>`
                                                         , {'className' : 'custom-popup'});
                                 
-                                overlays.addLayer(placesOfInterest);	
-                                    
+                                                        poi.addLayer(placesOfInterest);	
+                                                        map.addLayer(poi);
                                 if (i > 28) break;
                             }
                         };
@@ -326,9 +333,7 @@ $('select').removeAttr('hidden');
         },
         success: function(result){ 
 
-            let latitude = result.data.latlng[0];
-            let longitude = result.data.latlng[1];
-            
+            let capital = result.data.capital;
 
             if(result.status.name == "ok"){
 
@@ -355,8 +360,10 @@ $('select').removeAttr('hidden');
 
                 //Modal country Name labels 
 
-                    // Weather Modal country name
-                $('#weather-country-name').html(result.data.name);
+                    // Weather Modal city name
+                $('#weather-country-name').html(result.data.capital);
+                $('#weather-modal-country').html(result.data.capital);
+                $('#weather-country').html(result.data.name);
 
                     // General Modal country name
                 $('#general-country-name').html(result.data.name)
@@ -370,35 +377,52 @@ $('select').removeAttr('hidden');
 
                     // Photo name
                 $('#photo-country-name').html(result.data.name);
-            } 
 
-            // Weather Modal 
-            $.ajax({
+                } 
+
+
+                // weather forecast
+                $.ajax({
         
-                url: 'libs/php/getWeather.php',
+                url: 'libs/php/getWeatherForecast.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    lat: latitude,
-                    lng: longitude
+                    capitalCity: capital
                 },
                 success: function(result){ 
 
                     if(result.status.name == "ok"){
-                        
-                        //weather description 
-                        $('#weather-description').html(result.data.weather[0].description);
-                        $('#weather-icon').empty().append('<img id="weather-icon" src="https://openweathermap.org/img/wn/' + result.data.weather[0].icon + '@2x.png"></img>');
-                        //Weather information
 
-                        $('#temperature').html(Math.round(result['data']['main']['temp']).toString());
-                        $('#feelslike').html(Math.round(result['data']['main']['feels_like']).toString());
-                        $('#mintemp').html(Math.round(result['data']['main']['temp_min']).toString());
-                        $('#maxtemp').html(Math.round(result['data']['main']['temp_max']).toString());
-                        $('#pressure').html(Math.round(result['data']['main']['pressure']).toString());
-                        $('#humidity').html(Math.round(result['data']['main']['humidity']).toString());
-                        $('#clouds').html(Math.round(result['data']['clouds']['all']).toString());
-                        $('#windSpeed').html(Math.round(result['data']['wind']['speed']).toString());
+                        //Big weather display 
+                        $('#temperature').html(Math.round(result.data.list[0].main.temp).toString() + '&#8451;');
+                        $('#current-weather-icon').empty().append('<img id="current-weather-icon" src="https://openweathermap.org/img/wn/' + result.data.list[0].weather[0].icon + '@2x.png"></img>');
+
+                        $('#forecast-date1').empty().append(new Date(result.data.list[0].dt_txt).toDateString().substring(0, 10));
+                        $('#forecast-icon1').empty().append('<img id="forecast-icon1" style=" width: 70%; display: block; margin-left: auto; margin-right: auto;" src="https://openweathermap.org/img/wn/' + result.data.list[0].weather[0].icon + '@2x.png"></img>');
+                        $('#forecast-temperature1').html(Math.round(result.data.list[0].main.temp).toString() + '&#8451;');
+
+
+                        $('#forecast-date2').empty().append(new Date(result.data.list[8].dt_txt).toDateString().substring(0, 10));
+                        $('#forecast-icon2').empty().append('<img id="forecast-icon1" style=" width: 70%; display: block; margin-left: auto; margin-right: auto;" src="https://openweathermap.org/img/wn/' + result.data.list[8].weather[0].icon + '@2x.png"></img>');
+                        $('#forecast-temperature2').html(Math.round(result.data.list[8].main.temp).toString() + '&#8451;');
+
+
+                        $('#forecast-date3').empty().append(new Date(result.data.list[15].dt_txt).toDateString().substring(0, 10));
+                        $('#forecast-icon3').empty().append('<img id="forecast-icon1" style=" width: 70%; display: block; margin-left: auto; margin-right: auto;" src="https://openweathermap.org/img/wn/' + result.data.list[15].weather[0].icon + '@2x.png"></img>');
+                        $('#forecast-temperature3').html(Math.round(result.data.list[15].main.temp).toString() + '&#8451;');
+
+
+
+                        $('#forecast-date4').empty().append(new Date(result.data.list[31].dt_txt).toDateString().substring(0, 10));
+                        $('#forecast-icon4').empty().append('<img id="forecast-icon1" style=" width: 70%; display: block; margin-left: auto; margin-right: auto;" src="https://openweathermap.org/img/wn/' + result.data.list[31].weather[0].icon + '@2x.png"></img>');
+                        $('#forecast-temperature4').html(Math.round(result.data.list[31].main.temp).toString() + '&#8451;');
+
+
+                        $('#forecast-date5').empty().append(new Date(result.data.list[39].dt_txt).toDateString().substring(0, 10));
+                        $('#forecast-icon5').empty().append('<img id="forecast-icon1" style=" width: 70%; display: block; margin-left: auto; margin-right: auto;" src="https://openweathermap.org/img/wn/' + result.data.list[39].weather[0].icon + '@2x.png"></img>');
+                        $('#forecast-temperature5').html(Math.round(result.data.list[39].main.temp).toString() + '&#8451;');
+
                     }
 
                     },
@@ -406,6 +430,7 @@ $('select').removeAttr('hidden');
                         console.log("ERROR!")
                 }
                 });
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("ERROR!")
@@ -541,8 +566,6 @@ $('select').removeAttr('hidden');
                     if (i > 10) break;
                 }
 
-                frame.append(`<iframe id="wikiLink" name="wikiLink" src="${'//' + url(filteredSearch[0].wikipediaUrl)}" title="${'Wiki Search: ' + $("#selectCountry option:selected").text()}" class="w-100"></iframe>`)
-
                 $('#wikiNewTab').attr('href','//' + url(filteredSearch[0].wikipediaUrl));
 
             }
@@ -562,8 +585,7 @@ $('select').removeAttr('hidden');
         $('#wikiLink').attr("src", '');
     });
 
-
-    //News Modal 
+    // News Modal 
     $('#selectCountry').on('change', () =>{
         let country = $('#selectCountry').val();
 
@@ -578,26 +600,35 @@ $('select').removeAttr('hidden');
                 
 
                 if(result.status.name == "ok"){
-
+                    
+                    try {
                     // News-1
                     $('#news-title1').html(result.data.articles[0].title);
+                    $('#news-title1').wrap(`<a href="${result.data.articles[0].url}" style="color: black; text-decoration: none;" target="_blank"></a>`);
                     $('#news-description1').html(result.data.articles.description);
-                    $('#news-link1').empty().append(`<a href="${result.data.articles[0].url}" style="color: black;" target="_blank">Click here to view the full story</a>`);
+                    $('#news-image1').empty().append(`<img src=generalNews.jpeg style="width: 29rem; height: 25rem; border: 2px solid #000"></img>`)
+
                     // News-2
                     $('#news-title2').html(result.data.articles[1].title);
+                    $('#news-title2').wrap(`<a href="${result.data.articles[1].url}" style="color: black; text-decoration: none;" target="_blank"></a>`);
                     $('#news-description2').html(result.data.articles.description);
-                    $('#news-link2').empty().append(`<a href="${result.data.articles[1].url}" style="color: black;" target="_blank">Click here to view the full story</a>`);
+                    $('#news-image2').empty().append(`<img src=news2.jpeg style="width: 29rem; height: 25rem; border: 2px solid #000"></img>`)
+
                     // News-3
                     $('#news-title3').html(result.data.articles[2].title);
+                    $('#news-title3').wrap(`<a href="${result.data.articles[2].url}" style="color: black; text-decoration: none;" target="_blank"></a>`);
                     $('#news-description3').html(result.data.articles.description);
-                    $('#news-link3').empty().append(`<a href="${result.data.articles[2].url}" style="color: black;" target="_blank">Click here to view the full story</a>`);
+                    $('#news-image3').empty().append(`<img src=news3.webp style="width: 29rem; height: 25rem; border: 2px solid #000"></img>`)
+
                     // News-4
                     $('#news-title4').html(result.data.articles[3].title);
+                    $('#news-title4').wrap(`<a href="${result.data.articles[3].url}" style="color: black; text-decoration: none;" target="_blank"></a>`);
                     $('#news-description4').html(result.data.articles.description);
-                    $('#news-link4').empty().append(`<a href="${result.data.articles[3].url}" style="color: black;" target="_blank">Click here to view the full story</a>`);
-
-
+                    $('#news-image4').empty().append(`<img src=news4.webp style="width: 29rem; height: 25rem; border: 2px solid #000"></img>`)
+                } catch (err) {
+                   
                 }
+                } 
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("ERROR")

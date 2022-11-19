@@ -3,7 +3,6 @@ body {
     padding: 0;
 }
 
-
 /* map */
 
 #map {
@@ -23,7 +22,54 @@ body {
     left: 25% !important;
 }
 
+/* weather modal */
+body {
+    color: #000;
+    overflow-x: hidden;
+    height: 100%;
+    background-color: #fff;
+    background-repeat: no-repeat;
+}
 
+.card {
+    width: 500px;
+    background-color: #fff;
+}
+
+.block {
+    width: 20%;
+    background-color: #fff;
+    cursor: pointer;
+    padding: 10px 0px;
+}
+
+.first-block {
+    border-bottom-left-radius: 5px;
+}
+
+.last-block {
+    border-bottom-right-radius: 5px;
+}
+
+.city-symbol {
+    width: 200px;
+    height: 250px;
+}
+
+.large-font {
+    font-size: 60px;
+}
+
+.symbol-img {
+    width: 40px;
+    height: 40px;
+}
+
+@media screen and (max-width: 400px) {
+    .card {
+        width: 92%;
+    }
+}
 
 /* preloader */
 #prescreen {

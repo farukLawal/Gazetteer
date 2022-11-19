@@ -6,12 +6,12 @@
 	$executionStartTime = microtime(true);
 
 
-    	$count = $_REQUEST['countryiso'];
+    $count = $_REQUEST['countryiso'];
 
-    	$url="https://restcountries.com/v2/alpha/{$count}";
+    $url="https://restcountries.com/v2/alpha/{$count}";
     
 
-    	$ch = curl_init();
+    $ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);

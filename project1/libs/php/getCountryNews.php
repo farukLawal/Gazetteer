@@ -6,14 +6,16 @@
 	$executionStartTime = microtime(true);
 
 
-    $url='https://openexchangerates.org/api/currencies.json?app_id=dbe30082e7ea40a9979e6925b3baa4be';
-    
+    $countryCode = $_REQUEST['country'];
+	$apikey = '07b8db901f5b8fb2c958d81d0c83018c';
+
+    $url='https://gnews.io/api/v4/top-headlines?token=' . $apikey .'&country=' . $countryCode;
 
     $ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);
-
+	
 	$result=curl_exec($ch);
 
 	curl_close($ch);
@@ -26,7 +28,6 @@
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
 	$output['data'] = $decode;
 
-    
 	header('Content-Type: application/json; charset=UTF-8');
 
 	echo json_encode($output); 

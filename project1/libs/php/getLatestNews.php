@@ -6,13 +6,13 @@
 	$executionStartTime = microtime(true);
 
 
-    	$countryCode = $_REQUEST['country'];
+    $countryCode = $_REQUEST['country'];
 
 
-    	$url='https://newsapi.org/v2/top-headlines?country='. $countryCode .'&apiKey=0c15fba93c1243c992aecf2d4d027afb';
+    $url='https://newsapi.org/v2/top-headlines?country='. $countryCode .'&apiKey=0c15fba93c1243c992aecf2d4d027afb';
     
 
-    	$ch = curl_init();
+    $ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);

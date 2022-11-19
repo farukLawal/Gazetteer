@@ -5,13 +5,11 @@
 
 	$executionStartTime = microtime(true);
 
-    	$lat = $_REQUEST['lat'];
-	$lng = $_REQUEST['lng'];
+	$capital = $_REQUEST['capitalCity'];
 
-    	$url='https://api.openweathermap.org/data/2.5/weather?lat=' . $lat . '&lon=' . $lng . '&lang=en&units=metric&appid=d271a5e70ad0c8777f5336fa89d786d6';
-    
+	$url="api.openweathermap.org/data/2.5/forecast?q={$capital}&lang=en&units=metric&appid=d271a5e70ad0c8777f5336fa89d786d6";
 
-    	$ch = curl_init();
+    $ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);
@@ -28,7 +26,7 @@
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
 	$output['data'] = $decode;
 
-    	//added extra outputs geonames, openweather, etc..
+    //added extra outputs geonames, openweather, etc..
 	header('Content-Type: application/json; charset=UTF-8');
 
 	echo json_encode($output); 

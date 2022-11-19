@@ -65,43 +65,46 @@
             <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
          </div>
          <div class="modal-body bg-light">
-            <table class="table table-striped">
-               <tbody>
-                  <tr>
-                     <td  colspan="1" id="weather-icon"></td>
-                     <td style="vertical-align: middle;"><span id="temperature"></span> &degC<br><span id="weather-description"></span></td>
-                  </tr>
-                  <tr>
-                     <td>Feels Like</td>
-                     <td><span id="feelslike"></span> &degC</td>
-                  </tr>
-                  <tr>
-                     <td>Minimum Temperature</td>
-                     <td><span id="mintemp"></span> &degC</td>
-                  </tr>
-                  <tr>
-                     <td>Maximum Temperature</td>
-                     <td><span id="maxtemp"></span> &degC</td>
-                  </tr>
-                  <tr>
-                     <td>Pressure</td>
-                     <td><span id="pressure"></span> Hg</td>
-                  </tr>
-                  <tr>
-                     <td>Humidity</td>
-                     <td><span id="humidity"></span> %</td>
-                  </tr>
-                  <tr>
-                     <td>Clouds</td>
-                     <td><span id="clouds"></span> %</td>
-                  </tr>
-                  <tr>
-                     <td>WindSpeed</td>
-                     <td><span id="windSpeed"></span> mph</td>
-                  </tr>
-                  
-               </tbody>
-             </table>
+            <div class="container px-1 px-sm-4 py-5 mx-auto">
+               <div class="row d-flex justify-content-center">
+                   <div class="card text-center pt-4 border-0">
+                       <h4 class="mb-0" id="weather-modal-country"></h4>
+                       <small class="text-muted mb-3" id="weather-country">Red Square</small>
+                       <h2 class="large-font" id="temperature"> </h2>
+                       <div class="text-center mt-3 mb-4" id="current-weather-icon">
+                           <img class="city-symbol" src="" >
+                       </div>
+                       <div class="row d-flex px-3 mt-auto">
+                           <div class="d-flex flex-column block first-block">
+                               <small class="text-muted mb-0" id="forecast-date1"> </small>
+                               <div class="text-center" id="forecast-icon1"></div>
+                               <h6 id="forecast-temperature1"><strong></strong> </h6>
+                           </div>
+                           <div class="d-flex flex-column block">
+                               <small class="text-muted mb-0" id="forecast-date2"> </small>
+                               <div class="text-center" id="forecast-icon2"></div>
+                               <h6 id="forecast-temperature2"><strong> </strong></h6>
+                           </div>
+                           <div class="d-flex flex-column block active">
+                               <small class="text-muted mb-0" id="forecast-date3"> </small>
+                               <div class="text-center" id="forecast-icon3"></div>
+                               <h6 id="forecast-temperature3"><strong> </strong></h6>
+                           </div>
+                           <div class="d-flex flex-column block">
+                               <small class="text-muted mb-0" id="forecast-date4"> </small>
+                               <div class="text-center" id="forecast-icon4"></div>
+                               <h6 id="forecast-temperature4"><strong> </strong></h6>
+                           </div>
+                           <div class="d-flex flex-column block last-block">
+                               <small class="text-muted mb-0" id="forecast-date5"> </small>
+                               <div class="text-center" id="forecast-icon5"></div>
+                               <small class="text-muted mb-0"> </small>
+                               <h6 id="forecast-temperature5"><strong> </strong></h6>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
          </div>
          <div class="modal-footer bg-white">
             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
@@ -230,6 +233,7 @@
    <div class="modal-content">
       <div class="modal-header justify-content-center bg-black text-white">
          <h5 class="modal-title" id="news-modal">Latest news in <span id="news-country-name"></span> <span id="news-country-flag"></span></h5>
+         <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body bg-white text-dark">
             
@@ -237,32 +241,24 @@
                <hr>
                   <h5><span id="news-title1"></span></h5>
                   <div id="news-image1"></div>
-                  <p><span id="news-description1"></span></p>
-                  <div id="news-link1"></div>
                </hr>
 
                <!-- News 2 -->
                <hr>
                   <h5><span id="news-title2"></span></h5>
                   <div id="news-image2"></div>
-                  <p><span id="news-description2"></span></p>
-                  <div id="news-link2"></div>
                </hr>
 
                <!-- News 3 -->
                <hr>
                   <h5><span id="news-title3"></span></h5>
                   <div id="news-image3"></div>
-                  <p><span id="news-description3"></span></p>
-                  <div id="news-link3"></div>
                </hr>
 
                <!-- News 4 -->
                <hr>
                   <h5><span id="news-title4"></span></h5>
                   <div id="news-image4"></div>
-                  <p><span id="news-description4"></span></p>
-                  <div id="news-link4"></div>
                </hr>
              
       </div>
@@ -279,6 +275,7 @@
    <div class="modal-content">
       <div class="modal-header justify-content-center bg-black text-white">
          <h5 class="modal-title" id="photo-modal">Photos of <span id="photo-country-name"></span> <span id="news-country-flag"></span></h5>
+         <button type="button" class="btn-close btn-close-white" aria-label="Close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body bg-white text-dark">
          
@@ -335,6 +332,9 @@
 
     <!-- Leaflet Marker Cluster  -->
     <script src="libs/Leaflet.markercluster-1.4.1/dist/leaflet.markercluster-src.js"></script>
+
+    <!-- leaflet feature group js -->
+    <script src="libs/leaflet.featuregroup.subgroup.js"></script>
 
     <!-- FontAwesome JS -->
    <script src="https://kit.fontawesome.com/79c6f38879.js" crossorigin="anonymous"></script>

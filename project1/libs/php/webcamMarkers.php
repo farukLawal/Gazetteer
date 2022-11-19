@@ -5,10 +5,10 @@
 
 	$executionStartTime = microtime(true);
 
-    	$url='https://api.windy.com/api/webcams/v2/list/country='. $_REQUEST['webcamCountry'] .'/limit=30?key=CTddmwURZ1R5izQuufXYfYcsQHL5JsSl&show=webcams:location,image,player';
+    $url='https://api.windy.com/api/webcams/v2/list/country='. $_REQUEST['webcamCountry'] .'/limit=30?key=CTddmwURZ1R5izQuufXYfYcsQHL5JsSl&show=webcams:location,image,player';
     
 
-    	$ch = curl_init();
+    $ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);
