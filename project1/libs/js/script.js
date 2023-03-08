@@ -618,7 +618,7 @@ $('select').removeAttr('hidden');
                     $('#news-title3').html(result.data.articles[2].title);
                     $('#news-title3').wrap(`<a href="${result.data.articles[2].url}" style="color: black; text-decoration: none;" target="_blank"></a>`);
                     $('#news-description3').html(result.data.articles.description);
-                    $('#news-image3').empty().append(`<img src=news3.webp style="width: 29rem; height: 25rem; border: 2px solid #000"></img>`)
+                    $('#news-image3').empty().append(`<img src=news3.jpg style="width: 29rem; height: 25rem; border: 2px solid #000"></img>`)
 
                     // News-4
                     $('#news-title4').html(result.data.articles[3].title);
